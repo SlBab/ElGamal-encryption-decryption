@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <string>
 #include <fstream>
 using namespace std;
@@ -10,7 +10,7 @@ char alphabet[60] = { 'а','б','в','г','д','е','ж','з','и','к','л','м
                       'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',' ',',','.' };
 
 
-int stepen(int s, int y, int r)  // Возведение в степень по модулю (a = g^k mod p)
+int stepen(int s, int y, int r)  // Modulo exponentiation (a = g^k mod p)
 {
     if (y == 0) return 1;
     int z = stepen(s, y / 2, r);
@@ -20,25 +20,25 @@ int stepen(int s, int y, int r)  // Возведение в степень по 
         return (s * z * z) % r;
 }
 
-int stepenb(int s, int m, int y, int r) // Возведение в степень по модулю для числа b (b = y^k M mod p)
+int stepenb(int s, int m, int y, int r) // Modulo exponentiation for b (b = y^k M mod p)
 {
     if (y == 0) return 1;
     int z = stepen(s, y, r);
     return z * m % r;
 }
 
-void Cipher()   // Шифровка сообщения  
+void Cipher()   // Encryption  
 {
     ifstream Input("Input.txt");
     if (!Input.is_open()) {
-        std::cout << " Ошибка открытия файла" << endl;
+        std::cout << " Error: cannot open the file" << endl;
         exit(0);
     }
 
     ofstream Output("Output.txt");
     if (!Output.is_open())
     {
-        std::cout << " Ошибка открытия файла" << endl;
+        std::cout << " Error: cannot open the file" << endl;
         exit(0);
     }
 
@@ -48,12 +48,12 @@ void Cipher()   // Шифровка сообщения
         Input >> buf;
         msg += buf;
     }
-    cout << "\n Исходное сообщение: " << msg;
+    cout << "\n Initial message: " << msg;
 
     srand(time(NULL));
-    int x = rand() % (p - 2) + 2; // Закрытый ключ
+    int x = rand() % (p - 2) + 2; // Closed key
     srand(time(NULL));
-    int k = rand() % (p - 3) + 2; // Сессионный ключ
+    int k = rand() % (p - 3) + 2; // Session key
     cout << "\n x = " << x << "\n k = " << k << endl;
 
     int y = stepen(g, x, p);
@@ -62,10 +62,10 @@ void Cipher()   // Шифровка сообщения
     int* A = new int[len * 2];
     int* B = new int[len * 2];
 
-    cout << "\n Открытый ключ: (" << y << "," << g << "," << p << ")";
+    cout << "\n Open key: (" << y << "," << g << "," << p << ")";
     Output << x << endl << y << endl;
 
-    cout << "\n\n Закодированное сообщение: ";
+    cout << "\n\n Encoded message: ";
     
     string inmsg = "", m = "";
     for (int i = 0; i < len ; i++)
@@ -115,7 +115,7 @@ void Cipher()   // Шифровка сообщения
         i += 2;
     }
 
-    cout << "\n Зашифрованное сообщение:";
+    cout << "\n Encrtypted message:";
     for (int i = 0; i < count; i++)
     {
         A[i] = stepen(g, k, p);
@@ -126,7 +126,7 @@ void Cipher()   // Шифровка сообщения
     cout << endl;
 }
 
-void DeCipher() // Дешифровка сообщения
+void DeCipher() // Decryption
 {
     int x, y, i = 0, mout = 0;
     int* A = new int[60];
@@ -134,16 +134,16 @@ void DeCipher() // Дешифровка сообщения
 
     ifstream Output("Output.txt");
     if (!Output.is_open()) {
-        std::cout << " Ошибка открытия файла" << endl;
+        std::cout << " Error: cannot open the file" << endl;
         exit(0);
     }
 
     Output >> x;
     Output >> y;
-    cout << "\n Открытый ключ: (" << y << "," << g << "," << p << ")";
-    cout << "\n Закрытый ключ: (" << x << ")";
+    cout << "\n Open key: (" << y << "," << g << "," << p << ")";
+    cout << "\n Closed key: (" << x << ")";
 
-    cout << "\n\n Исходное зашифрованное сообщение: ";
+    cout << "\n\n Encrypted message: ";
 
     while (!Output.eof())
     {
@@ -152,7 +152,7 @@ void DeCipher() // Дешифровка сообщения
         i++;
     }
 
-    cout << "\n\n Дешифрованное сообщение: ";
+    cout << "\n\n Decrypted message: ";
 
     int len = i;
 
@@ -163,7 +163,7 @@ void DeCipher() // Дешифровка сообщения
     }
     cout << outmsg;
 
-    cout << "\n\n Декодированное сообщение: ";
+    cout << "\n\n Decoded message: ";
 
     int l = outmsg.length();
     int* num = new int[l];
@@ -188,26 +188,26 @@ int main()
     setlocale(LC_ALL, "Russian");
     int q;
 
-    cout << "\n 1) Шифровка\n 2) Дешифровка\n Выберите действие: ";
+    cout << "\n 1) Encryption\n 2) Decryption\n Select action: ";
     cin >> q;
 
     switch (q)
     {
         case 1:
         {
-            Cipher();  // Шифровка сообщения
+            Cipher();  // Encryption
             break;
         }
 
         case 2:
         {
-            DeCipher();  // Дешифровка сообщения
+            DeCipher();  // Decryption
             break;
         }
 
         default:
         {
-            cout << " Ошибка: Неверное действие";
+            cout << " Error: wrong action";
             break;
         }
     }
